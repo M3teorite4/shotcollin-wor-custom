@@ -113,22 +113,19 @@ This fork reverses the effect of "priority" configuration values, so that settin
 Usage
 ============
 
-0) Update configuration values as needed. **Note**: This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
-1) Run Power Shell as admin;
-2) Type the following to enable PowerShell script execution:
-<code>Set-ExecutionPolicy Unrestricted -Force</code>
-
-3) Confirm the question;
-
-4) Run the script:
-<code>%path-to-file%/wor.ps1</code>
-
-or just right click the file wor.ps1 and select "Execute with powershell"
+0. Update configuration values as needed. **Note**: This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
+1. Run Power Shell as admin.
+2. Type the following to enable PowerShell script execution:  
+    <code>Set-ExecutionPolicy Unrestricted -Force</code>
+3. Confirm the question.
+4. Run the script:  
+    <code>\<path-to-file\>/wor.ps1</code>  
+    or just right click the file wor.ps1 and select "Execute with powershell"
 
 Notes
 ============
 
-- To prevent Windows to install bloatware, this script must be run before connecting to the internet for the first time;
+- To prevent Windows from installing bloatware, this script must be run before connecting to the internet for the first time;
 - Disabling Windows defender is unreversible and needs the system to be in safe mode;
 - Some NICs may show the preferred DNS encryption as "Unencrypted Only" after running the the fingerprinting prevention. Thats not true, the DNS is being handled over HTTPS (DoH) and there will be no traffic on port 53. Test using::
 

@@ -114,11 +114,15 @@ Usage
 ============
 
 0. Update configuration values as needed. **Note**: This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
+0. Run on new system **before** connecting to the Internet to prevent Windows from installing bloatware. When prompted to "Install initial packages?" answer no.
+0. Restart system in Safe Mode (in Run... dialog enter `msconfig` and check Safe Boot under Boot tab). Re-run script so that Windows Defender can be disabled. Again, choose no for installing initial packages.
+0. Restart again (in regular/non-safe mode). Run the script a final time.
+
+To run the script: 
 1. Run Power Shell as admin.
-2. Type the following to enable PowerShell script execution:  
+2. When running for the first time, type the following to enable PowerShell script execution:  
     <code>Set-ExecutionPolicy Unrestricted -Force</code>
-3. Confirm the question.
-4. Run the script:  
+3. Run the script:  
     <code>\<path-to-file\>/wor.ps1</code>  
     or just right click the file wor.ps1 and select "Execute with powershell"
 

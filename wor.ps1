@@ -352,7 +352,6 @@ $bloatwareList = @(
 		"*Microsoft.PPIP*"
 	}
 )
-		
 
 ##########
 # Configuration - End
@@ -428,12 +427,12 @@ Function regDelete($path, $desc) {
 	Write-Output ($desc)
 	
     If (Test-Path ("HKLM:\" + $path)) {
-        Remove-ItemProperty -Path ("HKLM:\" + $path) -Recurse -Force
+        Remove-Item -Path ("HKLM:\" + $path) -Recurse -Force
     }
 	If (Test-Path ("HKCU:\" + $path)) {
-        Remove-ItemProperty -Path ("HKCU:\" + $path) -Recurse -Force
+        Remove-Item -Path ("HKCU:\" + $path) -Recurse -Force
     }
-}	
+}
 
 Function regDeleteKey($path, $key, $desc) {
 	Write-Output ($desc)
@@ -485,7 +484,7 @@ Function deletePath($path, $desc) {
 		return	
 	}
 	
-	takeown /F $path | out-null	
+	takeown /F $path | out-null
 
 	$Acl = Get-ACL $path
 	$AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("everyone","FullControl","ContainerInherit,Objectinherit","none","Allow")
@@ -507,7 +506,7 @@ Function deletePath($path, $desc) {
 		$Acl = Get-ACL $Item
 		$AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("everyone","FullControl","Allow")
 		$Acl.AddAccessRule($AccessRule)
-		Set-Acl $Item $Acl 
+		Set-Acl $Item $Acl
 
 		$Acl = Get-ACL $Item
 		$username = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
@@ -530,18 +529,18 @@ Function deletePath($path, $desc) {
 	}
 }
 
-Function clearCaches {	
-	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\*" "Clearing network profiles..."
-	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Managed\*" "Clearing managed network profiles..."
-	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Unmanaged\*" "Clearing managed network profiles..."
-	regDelete "SYSTEM\CurrentControlSet\Enum\USBSTOR\*" "Clearing USB history..."
-	regDelete "SYSTEM\CurrentControlSet\Control\usbflags\*" "Clearing USB history..."
-	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Nla\Cache\Intranet\*" "Clearing intranet history..."
-	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU\*" "Clearing commands history..."
-	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths\*" "Clearing typed paths cache..."
-	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs\*" "Clearing recent docs cache..."
-	regDelete "SYSTEM\CurrentControlSet\Control\Session Manager\AppCompatCache\*" "Clearing compat cache..."
-	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2\*" "Clearing mapped drives cache..."
+Function clearCaches {
+	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\" "Clearing network profiles..."
+	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Managed\" "Clearing managed network profiles..."
+	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\Unmanaged\" "Clearing managed network profiles..."
+	regDelete "SYSTEM\CurrentControlSet\Enum\USBSTOR\" "Clearing USB history..."
+	regDelete "SYSTEM\CurrentControlSet\Control\usbflags\" "Clearing USB history..."
+	regDelete "SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Nla\Cache\Intranet\" "Clearing intranet history..."
+	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU\" "Clearing commands history..."
+	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths\" "Clearing typed paths cache..."
+	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs\" "Clearing recent docs cache..."
+	regDelete "SYSTEM\CurrentControlSet\Control\Session Manager\AppCompatCache\" "Clearing compat cache..."
+	regDelete "Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2\" "Clearing mapped drives cache..."
 	
 	Stop-Process -ProcessName explorer -Force	
 	Remove-Item $env:TEMP\*.* -confirm:$false -Recurse -Force
@@ -562,7 +561,7 @@ Function clearCaches {
 }
 	
 Function RegChange($path, $thing, $value, $desc, $type) {
-	Write-Output ($desc)	
+	Write-Output ($desc)
 	
    # String: Specifies a null-terminated string. Equivalent to REG_SZ.
    # ExpandString: Specifies a null-terminated string that contains unexpanded references to environment variables that are expanded when the value is retrieved. Equivalent to REG_EXPAND_SZ.
@@ -591,7 +590,6 @@ Function RegChange($path, $thing, $value, $desc, $type) {
 	If (Test-Path ("HKCU:\" + $path)) {
         Set-ItemProperty ("HKCU:\" + $path) $thing -Value $value -Type $type2 -PassThru:$false | out-null
     }	
-
 }
 
 #This will self elevate the script so with a UAC prompt since this script needs to be run as an Administrator in order to function properly.
@@ -636,17 +634,6 @@ function killProcess{
 Function DisableUAC {
 	New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -PropertyType DWord -Value 0 -Force -EA SilentlyContinue | Out-Null
 	if($?){   write-Host -ForegroundColor Green "Windows UAC disabled"  }else{   write-Host -ForegroundColor green "Windows UAC not disabled" } 
-	rd "%UserProfile%\OneDrive" /q /s > nul 2>&1
-	rd "%SystemDrive%\OneDriveTemp" /q /s > nul 2>&1
-	rd "%LocalAppData%\Microsoft\OneDrive" /q /s > nul 2>&1
-	rd "%ProgramData%\Microsoft OneDrive" /q /s > nul 2>&1
-	reg delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f > nul 2>&1
-	reg delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f > nul 2>&1
-	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d 1 /f > nul
-	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /t REG_DWORD /d 1 /f > nul
-	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d 1 /f > nul
-	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d 1 /f > nul
-	reg add "HKCU\SOFTWARE\Microsoft\OneDrive" /v "DisablePersonalSync" /t REG_DWORD /d 1 /f > nul
 }
 
 Function EnablePeek {	
@@ -790,7 +777,7 @@ Function installDraculaNotepad {
 	$wc = New-Object System.Net.WebClient
 	$wc.DownloadFile($url, $output)
 
-	Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)" 
+	Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
 
 	$file = "$Env:USERPROFILE\AppData\Roaming\Notepad++\config.xml"
 	$OpenTag = 'name="stylerTheme" path="'
@@ -825,7 +812,7 @@ Function uninstallDraculaNotepad {
 		Write-Output "Starting Notepad++" 
 		Start notepad++
 	}
-}	
+}
 
 # Link-Local Multicast Name Resolution (LLMNR) protocol, a protocol that allow name resolution without the requirement of a DNS server. LLMNR is a secondary name resolution protocol. 
 # With LLMNR, queries are sent using multicast over a local network link on a single subnet from a client computer to another client computer on the same subnet that also has LLMNR enabled.
@@ -836,7 +823,7 @@ Function DisableLLMNR {
 
 Function EnableLLMNR {
 	RegChange "SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" "EnableMulticast" "1" "Enabling Link-Local Multicast Name Resolution (LLMNR) protocol" "DWord"
-}	
+}
 
 ##########
 # Global Functions - End
@@ -847,7 +834,7 @@ Function EnableLLMNR {
 # Program - Start
 ##########
 
-if ($troubleshootInstalls -eq 1) {	
+if ($troubleshootInstalls -eq 1) {
 
 	RegChange "SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" "Start" "2" "Disabling diagnosticshub.standardcollector.service service" "DWord"
 	Get-Service diagnosticshub.standardcollector.service | Set-Service -StartupType automatic
@@ -966,7 +953,6 @@ if ($beAppxSafe -eq 0) {
 	RegChange "SYSTEM\ControlSet001\Services\PcaSvc" "Start" "2" "Enabling PcaSvc (Program Compatibility Assistant) service" "DWord"
 	Get-Service PcaSvc | Set-Service -StartupType automatic
 }
-
 
 if ($beXboxSafe -eq 0) {
 	$safeXboxBloatware = @(	
@@ -1189,15 +1175,15 @@ if ($disablelastaccess -eq 1) {
 if ($doPerformanceStuff -eq 0) {
 	# USELESS FAX
 	Get-Service Fax | Stop-Service -PassThru | Set-Service -StartupType automatic
-	if($?){   write-Host -ForegroundColor Green "Windows Fax service enabled"  }else{   write-Host -ForegroundColor red "Windows Fax service not enabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Fax service enabled"  }else{   write-Host -ForegroundColor red "Windows Fax service not enabled" }
 
 	# USELESS GEO
 	Get-Service lfsvc | Stop-Service -PassThru | Set-Service -StartupType automatic
-	if($?){   write-Host -ForegroundColor Green "Geo service enabled"  }else{   write-Host -ForegroundColor red "Geo service not enabled" } 
+	if($?){   write-Host -ForegroundColor Green "Geo service enabled"  }else{   write-Host -ForegroundColor red "Geo service not enabled" }
 
 	# USELESS DusmSvc
 	Get-Service DusmSvc | Stop-Service -PassThru | Set-Service -StartupType automatic
-	if($?){   write-Host -ForegroundColor Green "DusmSvc service enabled"  }else{   write-Host -ForegroundColor red "DusmSvc service not enabled" } 
+	if($?){   write-Host -ForegroundColor Green "DusmSvc service enabled"  }else{   write-Host -ForegroundColor red "DusmSvc service not enabled" }
 
 	Write-Output "Troubleshoot Install: Enabling Windows Management Instrumentation service enabled."
 	Get-Service Winmgmt | Start-Service -PassThru | Set-Service -StartupType automatic
@@ -1301,15 +1287,15 @@ if ($doPerformanceStuff -eq 0) {
 if ($doPerformanceStuff -eq 1) {
 	# USELESS FAX
 	Get-Service Fax | Stop-Service -PassThru | Set-Service -StartupType disabled
-	if($?){   write-Host -ForegroundColor Green "Windows Fax service disabled"  }else{   write-Host -ForegroundColor red "Windows Fax service not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Fax service disabled"  }else{   write-Host -ForegroundColor red "Windows Fax service not disabled" }
 
 	# USELESS GEO
 	Get-Service lfsvc | Stop-Service -PassThru | Set-Service -StartupType disabled
-	if($?){   write-Host -ForegroundColor Green "Geo service disabled"  }else{   write-Host -ForegroundColor red "Geo service not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Geo service disabled"  }else{   write-Host -ForegroundColor red "Geo service not disabled" }
 
 	# USELESS DusmSvc
 	Get-Service DusmSvc | Stop-Service -PassThru | Set-Service -StartupType disabled
-	if($?){   write-Host -ForegroundColor Green "DusmSvc service disabled"  }else{   write-Host -ForegroundColor red "DusmSvc service not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "DusmSvc service disabled"  }else{   write-Host -ForegroundColor red "DusmSvc service not disabled" }
 
 	Write-Output "Troubleshoot Install: Enabling Windows Management Instrumentation service enabled."
 	Get-Service Winmgmt | Start-Service -PassThru | Set-Service -StartupType disabled
@@ -1499,7 +1485,7 @@ if ($doQualityOfLifeStuff -eq 1) {
 	RegChange "SYSTEM\CurrentControlSet\Control\Session Manager\Power" "HiberbootEnabled" "0" "Disabling Fast boot..." "DWord"
 	powercfg /hibernate OFF
 	
-	Write-Host "RAZER services that allows third party software to mess with your keyboard backlight" -ForegroundColor Green -BackgroundColor Black 	
+	Write-Host "RAZER services allows third party software to mess with your keyboard backlight" -ForegroundColor Green -BackgroundColor Black 	
 	Write-Output "Disabling Razer Chroma SDK Server..."
 	Get-Service "Razer Chroma SDK Server" | Stop-Service -PassThru | Set-Service -StartupType disabled
 	Write-Output "Disabling Razer Chroma SDK Service..."
@@ -1523,7 +1509,77 @@ if ($doQualityOfLifeStuff -eq 1) {
 	RegChange "Control Panel\Mouse" "MouseSpeed" "0" "Disabling Windows enhanced pointer precision..." "DWord"
 	RegChange "Control Panel\Mouse" "MouseThreshold1" "0" "Disabling Windows enhanced pointer acceleration..." "DWord"
 	RegChange "Control Panel\Mouse" "MouseThreshold2" "0" "Disabling Windows enhanced pointer acceleration..." "DWord"
-	
+
+	### Items below have NOT been added into the Quality of Life "enabled" function above, so once turned off they won't be automatically turned back on by running script with QoL set to 0
+
+	# Disable notifications
+	reg add 'HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' /v DisableNotificationCenter /t REG_DWORD /d 1 /f
+	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications" /v "ToastEnabled" /t REG_DWORD /d 0 /f
+	reg add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v EnableBalloonTips /t REG_DWORD /d 0 /f
+	reg add HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer /v DisableNotificationCenter /t REG_DWORD /d 1 /f
+	reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer /v DisableNotificationCenter /t REG_DWORD /d 1 /f
+
+	# Disable Windows Tile Notifications
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Notifications\DisallowTileNotification")) {
+	    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Notifications\DisallowTileNotification" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Notifications\DisallowTileNotification" -Name "value" -Type DWord -Value 1
+	if($?){   write-Host -ForegroundColor Green "Windows Tile Notifications disabled"  }else{   write-Host -ForegroundColor red "Windows Tile Notifications not disabled" }
+
+	# Disable Windows Defender Enhanced Notifications
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableEnhancedNotifications")) {
+	    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableEnhancedNotifications" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableEnhancedNotifications" -Name "value" -Type DWord -Value 1
+	if($?){   write-Host -ForegroundColor Green "Windows Defender Enhanced Notifications disabled"  }else{   write-Host -ForegroundColor red "Windows Defender Enhanced Notifications not disabled" }
+
+	# Disable Windows Defender Security Center Notifications
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableNotifications")) {
+	    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableNotifications" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableNotifications" -Name "value" -Type DWord -Value 1
+	if($?){   write-Host -ForegroundColor Green "Windows Defender Security Center Notifications disabled"  }else{   write-Host -ForegroundColor red "Windows Defender Security Center Notifications not disabled" }
+
+	# Disable AllowSuggestedAppsInWindowsInkWorkspace
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsInkWorkspace\AllowSuggestedAppsInWindowsInkWorkspace")) {
+	    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsInkWorkspace\AllowSuggestedAppsInWindowsInkWorkspace" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsInkWorkspace\AllowSuggestedAppsInWindowsInkWorkspace" -Name "value" -Type DWord -Value 0
+	if($?){   write-Host -ForegroundColor Green "AllowSuggestedAppsInWindowsInkWorkspace disabled"  }else{   write-Host -ForegroundColor red "AllowSuggestedAppsInWindowsInkWorkspace not disabled" }
+
+	# Disable SgrmAgent
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmAgent")) {
+	    New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmAgent" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmAgent" -Name "Start" -Type DWord -Value 2
+	if($?){   write-Host -ForegroundColor Green "SgrmAgent disabled"  }else{   write-Host -ForegroundColor red "SgrmAgent not disabled" }
+
+	# Disable SgrmBroker
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmBroker")) {
+	    New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmBroker" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmBroker" -Name "Start" -Type DWord -Value 2
+	if($?){   write-Host -ForegroundColor Green "SgrmBroker disabled"  }else{   write-Host -ForegroundColor red "SgrmBroker not disabled" }
+
+	# Disable SgrmAgent
+	If (!(Test-Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmAgent")) {
+	    New-Item -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmAgent" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmAgent" -Name "Start" -Type DWord -Value 2
+	if($?){   write-Host -ForegroundColor Green "SgrmAgent disabled"  }else{   write-Host -ForegroundColor red "SgrmAgent not disabled" }
+
+	# Disable SgrmBroker
+	If (!(Test-Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmBroker")) {
+	    New-Item -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmBroker" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmBroker" -Name "Start" -Type DWord -Value 2
+	if($?){   write-Host -ForegroundColor Green "SgrmBroker disabled"  }else{   write-Host -ForegroundColor red "SgrmBroker not disabled" }
+
+	# xbox dvr causing fps issues
+	reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR /v value /t REG_DWORD /d 0 /f
+
+	# WE DONT NEED TELEMETRY AGENT NVIDIA!
+	Get-Service NvTelemetryContainer | Stop-Service -PassThru | Set-Service -StartupType automatic
 }
 
 if ($doPrivacyStuff -eq 0) {
@@ -1654,8 +1710,8 @@ if ($doPrivacyStuff -eq 0) {
 	Write-Host "Stopping and disabling EventLog (Windows Event Log)..."
 	Get-Service EventLog | Set-Service -StartupType automatic
 	
-	# Disable Ip helper due transfering a lot of strange data
-	RegChange "SYSTEM\CurrentControlSet\Services\iphlpsvc" "Start" "2" "Enabling Ip Helper service" "DWord"
+	# Disable IP helper due transfering a lot of strange data
+	RegChange "SYSTEM\CurrentControlSet\Services\iphlpsvc" "Start" "2" "Enabling IP Helper service" "DWord"
 	Get-Service iphlpsvc | Set-Service -StartupType automatic
 }
 
@@ -1688,10 +1744,10 @@ if ($doPrivacyStuff -eq 1) {
 	RegChange "SOFTWARE\Policies\Microsoft\Windows\System" "UploadUserActivities" "0" "Disabling Activity History Feed"
 	RegChange "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableTailoredExperiencesWithDiagnosticData" "1" "Disabling Tailored Experiences"	
 	RegChange "SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" "AutoSetup" "0" "Disabling automatic installation of network devices"
-	RegChange "SYSTEM\CurrentControlSet\Control\Terminal Server" "fDenyTSConnections" "1" "Disabling Remote Desktop"
-	RegChange "SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" "UserAuthentication" "1" "Disabling Remote Desktop"	
-	RegChange "SYSTEM\CurrentControlSet001\Control\Terminal Server" "fDenyTSConnections" "1" "Disabling Remote Desktop"
-	RegChange "SYSTEM\CurrentControlSet001\Control\Terminal Server\WinStations\RDP-Tcp" "UserAuthentication" "1" "Disabling Remote Desktop"
+#	RegChange "SYSTEM\CurrentControlSet\Control\Terminal Server" "fDenyTSConnections" "1" "Disabling Remote Desktop"
+#	RegChange "SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" "UserAuthentication" "1" "Disabling Remote Desktop"	
+#	RegChange "SYSTEM\CurrentControlSet001\Control\Terminal Server" "fDenyTSConnections" "1" "Disabling Remote Desktop"
+#	RegChange "SYSTEM\CurrentControlSet001\Control\Terminal Server\WinStations\RDP-Tcp" "UserAuthentication" "1" "Disabling Remote Desktop"
 	RegChange "SOFTWARE\Policies\Microsoft\Windows\TabletPC" "PreventHandwritingDataSharing" "1" "Disabling handwriting personalization data sharing..." "DWord"	
 	RegChange "SOFTWARE\Policies\Microsoft\SQMClient\Windows" "CEIPEnable" "0" "Disabling Windows Customer Experience Improvement Program..." "DWord"
 	RegChange "SOFTWARE\Policies\Microsoft\AppV\CEIP" "CEIPEnable" "0" "Disabling Windows Customer Experience Improvement Program..." "DWord"
@@ -1760,9 +1816,9 @@ if ($doPrivacyStuff -eq 1) {
 	
 	if ($beTaskScheduleSafe -eq 0) {
 		Write-Host "TimeBrokerSvc NOT disabled because of the beTaskScheduleSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
-		RegChange "SYSTEM\CurrentControlSet\Services\TimeBrokerSvc" "Start" "2" "Enabling Time Brooker..." "DWord"
+		RegChange "SYSTEM\CurrentControlSet\Services\TimeBrokerSvc" "Start" "2" "Enabling Time Broker..." "DWord"
 	} else {	
-		RegChange "SYSTEM\CurrentControlSet\Services\TimeBrokerSvc" "Start" "4" "Disabling Time Brooker due to huge network usage and for spying users..." "DWord"
+		RegChange "SYSTEM\CurrentControlSet\Services\TimeBrokerSvc" "Start" "4" "Disabling Time Broker due to huge network usage and for spying users..." "DWord"
 	}
 	
 	Set-NetConnectionProfile -NetworkCategory Public
@@ -1803,8 +1859,8 @@ if ($doPrivacyStuff -eq 1) {
 	Write-Host "Stopping and disabling EventLog (Windows Event Log)..."
 	Get-Service EventLog | Stop-Service -PassThru | Set-Service -StartupType disabled
 	
-	# Disable Ip helper due transfering a lot of strange data
-	RegChange "SYSTEM\CurrentControlSet\Services\iphlpsvc" "Start" "4" "Disabling Ip Helper service" "DWord"
+	# Disable IP helper due transfering a lot of strange data
+	RegChange "SYSTEM\CurrentControlSet\Services\iphlpsvc" "Start" "4" "Disabling IP Helper service" "DWord"
 	Get-Service iphlpsvc | Set-Service -StartupType disabled
 }
 
@@ -1929,7 +1985,6 @@ if ($doFingerprintPrevention -eq 0) {
 	
 	# DNS-over-HTTPS (DoH) encrypt the communication between the client and the resolver to prevent the inspection of domain names by network eavesdroppers
 	RegChange "SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" "EnableAutoDoh" "0" "Disabling DNS over HTTPS (DoH)... " "DWord"
-
 }
 
 if ($doFingerprintPrevention -eq 1) {
@@ -1940,9 +1995,7 @@ if ($doFingerprintPrevention -eq 1) {
 	
 	# DNS-over-HTTPS (DoH) encrypt the communication between the client and the resolver to prevent the inspection of domain names by network eavesdroppers
 	RegChange "SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" "EnableAutoDoh" "2" "Enabling DNS over HTTPS (DoH)... " "DWord"
-
 }
-
 
 if ($darkTheme -eq 0) {
 	RegChange "SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" "1" "Disabling dark theme mode" "DWord"
@@ -1972,6 +2025,8 @@ if ($disableWindowsFirewall -eq 1) {
 
 if ($firefoxSettings -eq 1) {
 	killProcess("firefox");
+
+	choco install firefox
 	
 	$PrefsFiles = Get-Item -Path ($env:APPDATA+"\Mozilla\Firefox\Profiles\*\prefs.js")
 	$currentDate = Get-Date -UFormat "%Y-%m-%d-%Hh%M"
@@ -2097,7 +2152,7 @@ if ($firefoxCachePath) {
 	Add-Content $file $out
 	Write-Output "Updated $path"
 	}
-} 
+}
 
 if ($remove3dObjFolder -eq 0) {
 	RegChange "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" "a" "1" "Enabling 3D Objects from explorer My Computer submenu" "DWord"
@@ -2105,16 +2160,39 @@ if ($remove3dObjFolder -eq 0) {
 }
 
 if ($remove3dObjFolder -eq 1) {	
-    Write-Host "Removing 3D Objects from explorer 'My Computer' submenu"
+    Write-Host "Removing 3D Objects and other folders from explorer 'My Computer' submenu"
 	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" "Removing 3D Objects from explorer My Computer submenu"
 	regDelete "SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" "Removing 3D Objects from explorer My Computer submenu"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{374DE290-123F-4565-9164-39C4925E467B}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{374DE290-123F-4565-9164-39C4925E467B}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" "Removing all additional folders from Explorer and My Computer"
+	regDelete "SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" "Removing all additional folders from Explorer and My Computer"
 }
 
 if ($disableWindowsSounds -eq 1) { 
 	Write-Host "Disabling Windows sound effects..."
 	Get-ChildItem -Path "HKCU:\AppEvents\Schemes\Apps" | Get-ChildItem | Get-ChildItem | Where-Object {$_.PSChildName -eq ".Current"} | Set-ItemProperty -Name "(Default)" -Value ".None"
 }
-
 
 if ($disablePerformanceMonitor -eq 1) { 
 	deletePath "$env:WINDIR\System32\SleepStudy" "Clearing SleepStudy event trace session log..."
@@ -2131,7 +2209,6 @@ if ($beAppxSafe -eq 0) {
 	# Windows update services are required for Appx to work
 	$disableWindowsUpdates = 0;
 }
-
 
 if ($disableWindowsUpdates -eq 0) {	
 	RegChange "SYSTEM\CurrentControlSet\Services\UsoSvc" "Start" "2" "Enabling UsoSvc service" "DWord"
@@ -2271,112 +2348,112 @@ if ($unnistallWindowsDefender -eq 1) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Update\AllowUpdateService" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Update\AllowUpdateService" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows AllowUpdateService disabled"  }else{   write-Host -ForegroundColor red "Windows AllowUpdateService not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows AllowUpdateService disabled"  }else{   write-Host -ForegroundColor red "Windows AllowUpdateService not disabled" }
 
 	# Disable AllowAutoUpdate
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Update\AllowAutoUpdate")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Update\AllowAutoUpdate" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Update\AllowAutoUpdate" -Name "value" -Type DWord -Value 5
-	if($?){   write-Host -ForegroundColor Green "Windows AllowAutoUpdate disabled"  }else{   write-Host -ForegroundColor red "Windows AllowAutoUpdate not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows AllowAutoUpdate disabled"  }else{   write-Host -ForegroundColor red "Windows AllowAutoUpdate not disabled" }
 
 	# Disable Windows Defender AllowArchiveScanning
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowArchiveScanning")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowArchiveScanning" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowArchiveScanning" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowArchiveScanning disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowArchiveScanning not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowArchiveScanning disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowArchiveScanning not disabled" }
 
 	# Disable Windows Defender AllowBehaviorMonitoring
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowBehaviorMonitoring")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowBehaviorMonitoring" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowBehaviorMonitoring" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowBehaviorMonitoring disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowBehaviorMonitoring not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowBehaviorMonitoring disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowBehaviorMonitoring not disabled" }
 
 	# Disable Windows Defender AllowCloudProtection
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowCloudProtection")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowCloudProtection" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowCloudProtection" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowCloudProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowCloudProtection not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowCloudProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowCloudProtection not disabled" }
 
 	# Disable Windows Defender AllowIntrusionPreventionSystem
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowIntrusionPreventionSystem")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowIntrusionPreventionSystem" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowIntrusionPreventionSystem" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowIntrusionPreventionSystem disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowIntrusionPreventionSystem not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowIntrusionPreventionSystem disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowIntrusionPreventionSystem not disabled" }
 
 	# Disable Windows Defender AllowIOAVProtection
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowIOAVProtection")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowIOAVProtection" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowIOAVProtection" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowIOAVProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowIOAVProtection not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowIOAVProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowIOAVProtection not disabled" }
 
 	# Disable Windows Defender AllowOnAccessProtection
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowOnAccessProtection")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowOnAccessProtection" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowOnAccessProtection" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowOnAccessProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowOnAccessProtection not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowOnAccessProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowOnAccessProtection not disabled" }
 
 	# Disable Windows Defender AllowRealtimeMonitoring
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowRealtimeMonitoring")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowRealtimeMonitoring" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowRealtimeMonitoring" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowRealtimeMonitoring disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowRealtimeMonitoring not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowRealtimeMonitoring disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowRealtimeMonitoring not disabled" }
 
 	# Disable Windows Defender AllowScanningNetworkFiles
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowScanningNetworkFiles")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowScanningNetworkFiles" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowScanningNetworkFiles" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowScanningNetworkFiles disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowScanningNetworkFiles not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowScanningNetworkFiles disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowScanningNetworkFiles not disabled" }
 
 	# Disable Windows Defender AllowScriptScanning
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowScriptScanning")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowScriptScanning" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowScriptScanning" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowScriptScanning disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowScriptScanning not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowScriptScanning disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowScriptScanning not disabled" }
 
 	# Disable Windows Defender DisableCatchupFullScan
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\DisableCatchupFullScan")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\DisableCatchupFullScan" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\DisableCatchupFullScan" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender DisableCatchupFullScan disabled"  }else{   write-Host -ForegroundColor red "Windows Defender DisableCatchupFullScan not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender DisableCatchupFullScan disabled"  }else{   write-Host -ForegroundColor red "Windows Defender DisableCatchupFullScan not disabled" }
 
 	# Disable Windows Defender DisableCatchupQuickScan
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\DisableCatchupQuickScan")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\DisableCatchupQuickScan" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\DisableCatchupQuickScan" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender DisableCatchupQuickScan disabled"  }else{   write-Host -ForegroundColor red "Windows Defender DisableCatchupQuickScan not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender DisableCatchupQuickScan disabled"  }else{   write-Host -ForegroundColor red "Windows Defender DisableCatchupQuickScan not disabled" }
 
 	# Disable Windows Defender EnableNetworkProtection
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\EnableNetworkProtection")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\EnableNetworkProtection" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\EnableNetworkProtection" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender EnableNetworkProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender EnableNetworkProtection not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender EnableNetworkProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender EnableNetworkProtection not disabled" }
 
 	# Disable Windows Defender PUAProtection
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\PUAProtection")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\PUAProtection" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\PUAProtection" -Name "value" -Type DWord -Value 0
-	if($?){   write-Host -ForegroundColor Green "Windows Defender PUAProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender PUAProtection not disabled" } 
+	if($?){   write-Host -ForegroundColor Green "Windows Defender PUAProtection disabled"  }else{   write-Host -ForegroundColor red "Windows Defender PUAProtection not disabled" }
 
 	# Change Windows Defender RealTimeScanDirection to monitor only outgoing files
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\RealTimeScanDirection")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\RealTimeScanDirection" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\RealTimeScanDirection" -Name "value" -Type DWord -Value 2
-	if($?){   write-Host -ForegroundColor Green "Changed Windows Defender RealTimeScanDirection to monitor only outgoing files"  }else{   write-Host -ForegroundColor red "Windows RealTimeScanDirection not changed" } 
+	if($?){   write-Host -ForegroundColor Green "Changed Windows Defender RealTimeScanDirection to monitor only outgoing files"  }else{   write-Host -ForegroundColor red "Windows RealTimeScanDirection not changed" }
 
 	# Disable Windows Defender AllowEmailScanning
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowEmailScanning")) {
@@ -2385,9 +2462,6 @@ if ($unnistallWindowsDefender -eq 1) {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Defender\AllowEmailScanning" -Name "value" -Type DWord -Value 0
 	if($?){   write-Host -ForegroundColor Green "Windows Defender AllowEmailScanning disabled"  }else{   write-Host -ForegroundColor red "Windows Defender AllowEmailScanning not disabled" } 
 }
-
-
-
 
 ##########
 # Program - End
@@ -2399,7 +2473,7 @@ RegChange "SOFTWARE\Microsoft\CTF\LangBar" "Label" "1" "Fix language bar..." "DW
 RegChange "SOFTWARE\Microsoft\CTF\LangBar" "ShowStatus" "4" "Fix language bar..." "DWord"
 RegChange "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "CTFMON" "ctfmon.exe" "Fix typing in windows search bar..." "String"
 
-$visual = Read-Host "Install Initial Packages? (y/n)"
+$visual = Read-Host "Install initial packages? (y/n)"
 
 while("y","n" -notcontains $visual)
 {
@@ -2412,7 +2486,6 @@ while("y","n" -notcontains $showhidden)
 	$showhidden = Read-Host "y or n?"
 }
 
-
 $disableuac = Read-Host "Disable UAC and remove windows apps (y/n)"
 switch ($disableuac) {
 	y {
@@ -2420,11 +2493,16 @@ switch ($disableuac) {
 	}
 }
 
-
 $ink = Read-Host "Disable Windows INK (y/n)"
 while("y","n" -notcontains $ink)
 {
 	$ink = Read-Host "y or n?"
+}
+
+$onedrive = Read-Host "Disable and remove OneDrive? (y/n)"
+while("y","n" -notcontains $onedrive)
+{
+	$onedrive = Read-Host "y or n?"
 }
 
 if ($showhidden -like "y") { 
@@ -2437,7 +2515,6 @@ if ($showhidden -like "y") {
 	Set-ItemProperty $key HideFileExt 0
 	if($?){   write-Host -ForegroundColor Green "Windows Hidden Extensions Disabled"  }else{   write-Host -ForegroundColor red "Windows Hidden Extensions Options not Disabled" }
 }
-
 
 if ($ink -like "y") { 
 	#Disable INK
@@ -2457,109 +2534,46 @@ if ($visual -like "y") {
 	choco install dotnetcore -y
 	choco install dotnet-runtime -y
 	
-	choco install qbittorrent -y
+	#choco install qbittorrent -y
 	choco install k-litecodecpackfull -y
-	choco install imageglass -y
+	#choco install imageglass -y
 	choco install 7zip.install -y
 	choco install notepadplusplus -y
 }
 
-# REMOVE ONEDRIVE
-kill -processname OneDrive, aaa -Force -Verbose -EA SilentlyContinue
-if($?){   write-Host -ForegroundColor Green "One Drive process has been stoped"  }else{   write-Host -ForegroundColor Green "One Drive process is not running" } 
+if ($onedrive -like "y") {
+	# REMOVE ONEDRIVE
+	kill -processname OneDrive, aaa -Force -Verbose -EA SilentlyContinue
+	if($?){   write-Host -ForegroundColor Green "One Drive process has been stopped"  }else{   write-Host -ForegroundColor Green "One Drive process is not running" }
 
-if (Test-Path "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe") {
-"$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe /uninstall" | Out-Null
-if($?){   write-Host -ForegroundColor Green "One Drive has been uninstalled"  }else{   write-Host -ForegroundColor red "One Drive uninstaller failed!" } 
-}Else{
-write-Host -ForegroundColor yellow "One Drive unnistaller is not present on the system"
+	if (Test-Path "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe") {
+	"$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe /uninstall" | Out-Null
+	if($?){   write-Host -ForegroundColor Green "OneDrive has been uninstalled"  }else{   write-Host -ForegroundColor red "One Drive uninstaller failed!" } 
+	}Else{
+	write-Host -ForegroundColor yellow "OneDrive unnistaller is not present on the system"
+	}
+
+	Remove-Item "$env:USERPROFILE\OneDrive\*.*" -Force -ErrorAction SilentlyContinue
+	if($?){   write-Host -ForegroundColor Green "One Drive files removed"  }else{   write-Host -ForegroundColor red "One Drive files not Removed" }
+
+	Remove-Item "C:\OneDriveTemp\*.*" -Force -EA SilentlyContinue | Out-Null
+	if($?){   write-Host -ForegroundColor Green "One Drive temp files removed"  }else{   write-Host -ForegroundColor green "One Drive temp files not present" }
+
+	Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive\" -Force -EA SilentlyContinue | Out-Null
+	if($?){   write-Host -ForegroundColor Green "One Drive appdata folder removed"  }else{   write-Host -ForegroundColor green "One Drive appdata folder not present" }
+
+	reg delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
+	reg delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
+	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d 1 /f
+	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /t REG_DWORD /d 1 /f
+	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d 1 /f
+	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d 1 /f
+	reg add "HKCU\SOFTWARE\Microsoft\OneDrive" /v "DisablePersonalSync" /t REG_DWORD /d 1 /f
 }
-
-Remove-Item "$env:USERPROFILE\OneDrive\*.*" -Force -ErrorAction SilentlyContinue
-if($?){   write-Host -ForegroundColor Green "One Drive files removed"  }else{   write-Host -ForegroundColor red "One Drive files not Removed" } 
-
-Remove-Item "C:\OneDriveTemp\*.*" -Force -EA SilentlyContinue | Out-Null
-if($?){   write-Host -ForegroundColor Green "One Drive temp files Removed (Step 2)"  }else{   write-Host -ForegroundColor green "One Drive temp files not present" } 
-
-Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive\" -Force -EA SilentlyContinue | Out-Null
-if($?){   write-Host -ForegroundColor Green "One Drive appdata folder removed"  }else{   write-Host -ForegroundColor green "One Drive appdata folder not present" } 
-
 
 # Disable ShadowCopy
 vssadmin delete shadows /all /quiet | Out-Null
-if($?){   write-Host -ForegroundColor Green "Windows Shadowcopy removed"  }else{   write-Host -ForegroundColor green "Windows Shadowcopy already disabled" } 
-
-# Disable notifications
-reg add 'HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' /v DisableNotificationCenter /t REG_DWORD /d 1 /f
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications" /v "ToastEnabled" /t REG_DWORD /d 0 /f
-reg add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v EnableBalloonTips /t REG_DWORD /d 0 /f
-reg add HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer /v DisableNotificationCenter /t REG_DWORD /d 1 /f
-reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer /v DisableNotificationCenter /t REG_DWORD /d 1 /f
-
-# Disable Windows Tile Notifications
-If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Notifications\DisallowTileNotification")) {
-    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Notifications\DisallowTileNotification" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Notifications\DisallowTileNotification" -Name "value" -Type DWord -Value 1
-if($?){   write-Host -ForegroundColor Green "Windows Tile Notifications disabled"  }else{   write-Host -ForegroundColor red "Windows Tile Notifications not disabled" } 
-
-# Disable Windows Defender Enhanced Notifications
-If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableEnhancedNotifications")) {
-    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableEnhancedNotifications" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableEnhancedNotifications" -Name "value" -Type DWord -Value 1
-if($?){   write-Host -ForegroundColor Green "Windows Defender Enhanced Notifications disabled"  }else{   write-Host -ForegroundColor red "Windows Defender Enhanced Notifications not disabled" } 
-
-# Disable Windows Defender Security Center Notifications
-If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableNotifications")) {
-    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableNotifications" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsDefenderSecurityCenter\DisableNotifications" -Name "value" -Type DWord -Value 1
-if($?){   write-Host -ForegroundColor Green "Windows Defender Security Center Notifications disabled"  }else{   write-Host -ForegroundColor red "Windows Defender Security Center Notifications not disabled" } 
-
-
-# Disable AllowSuggestedAppsInWindowsInkWorkspace
-If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsInkWorkspace\AllowSuggestedAppsInWindowsInkWorkspace")) {
-    New-Item -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsInkWorkspace\AllowSuggestedAppsInWindowsInkWorkspace" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WindowsInkWorkspace\AllowSuggestedAppsInWindowsInkWorkspace" -Name "value" -Type DWord -Value 0
-if($?){   write-Host -ForegroundColor Green "AllowSuggestedAppsInWindowsInkWorkspace disabled"  }else{   write-Host -ForegroundColor red "AllowSuggestedAppsInWindowsInkWorkspace not disabled" } 
-
-# Disable SgrmAgent
-If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmAgent")) {
-    New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmAgent" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmAgent" -Name "Start" -Type DWord -Value 2
-if($?){   write-Host -ForegroundColor Green "SgrmAgent disabled"  }else{   write-Host -ForegroundColor red "SgrmAgent not disabled" } 
-
-# Disable SgrmBroker
-If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmBroker")) {
-    New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmBroker" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SgrmBroker" -Name "Start" -Type DWord -Value 2
-if($?){   write-Host -ForegroundColor Green "SgrmBroker disabled"  }else{   write-Host -ForegroundColor red "SgrmBroker not disabled" } 
-
-# Disable SgrmAgent
-If (!(Test-Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmAgent")) {
-    New-Item -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmAgent" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmAgent" -Name "Start" -Type DWord -Value 2
-if($?){   write-Host -ForegroundColor Green "SgrmAgent disabled"  }else{   write-Host -ForegroundColor red "SgrmAgent not disabled" } 
-
-# Disable SgrmBroker
-If (!(Test-Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmBroker")) {
-    New-Item -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmBroker" | Out-Null
-}
-Set-ItemProperty -Path "HKLM:\SYSTEM\ControlSet001\Services\SgrmBroker" -Name "Start" -Type DWord -Value 2
-if($?){   write-Host -ForegroundColor Green "SgrmBroker disabled"  }else{   write-Host -ForegroundColor red "SgrmBroker not disabled" } 
-
-# xbox dvr causing fps issues
-reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR /v value /t REG_DWORD /d 0 /f
-
-# WE DONT NEED TELEMETRY AGENT NVIDIA!
-Get-Service NvTelemetryContainer | Stop-Service -PassThru | Set-Service -StartupType automatic
-
-
+if($?){   write-Host -ForegroundColor Green "Windows Shadowcopy removed"  }else{   write-Host -ForegroundColor green "Windows Shadowcopy already disabled" }
 
 PowerCfg -SetActive $powerPlan
 write-Host -ForegroundColor Green "PowerScheme Sucessfully Applied"

@@ -10,76 +10,86 @@
 # Function = Option
 # List of Options
 
+##########################################################################
+## proirity confiurations that override other settings ###################
+##########################################################################
+
 $troubleshootInstalls = 0
 # 0 = Do nothing. *Recomended.
 # 1 = Enable essential stuff needed for some installations.
 # Note: Set to 1 if you are having trouble installing something on you pc.
 # Note: Known to fix these installations: windows language pack, Autodesk AutoCad and Appxs.
-# Note: Top priority configuration, overrides other settings.
+# Note: Priority configuration, overrides other settings.
 
-$beWifiSafe = 1
-# 0 = May disable services required to use Wifi. *Recomended.
-# 1 = Keep Wifi working
-# Note: Top priority configuration, overrides other settings.
+$beWifiSafe = 0
+# 0 = Keep Wifi working.
+# 1 = May disable services required to use Wifi. *Recomended.
+# Note: Priority configuration, overrides other settings.
+# Disables Radio Management Service (RmSvc) and WLAN config; if set to 0, RmSvc will not be disabled (is there an option for that below?)
 
-$beMicrophoneSafe = 0
-# 0 = Disable services required to use the microphone. *Recomended.
-# 1 = Keep microphone working
-# Note: Top priority configuration, overrides other settings.
+$beMicrophoneSafe = 1
+# 0 = Keep microphone working.
+# 1 = Disable services required to use the microphone. *Recomended.
+# Note: Priority configuration, overrides other settings.
 
-$beAppxSafe = 0
-# 0 = Disable resources needed for Appx programas, Windows Store and online MS Office features. *Recomended.
-# 1 = Will keep programs like Store and Mic rosoft Store working. Will Keep office online features working, like corporate login, power query, power bi workspace, "Open in app" option on sharepoint...
-# Note: Top priority configuration, overrides other settings.
-# Note: Will keep Windows updates active
+$beAppxSafe = 1
+# 0 = Will keep programs like Store and Microsoft Store working. Will Keep office online features working, like corporate login, power query, power bi workspace, "Open in app" option on sharepoint...
+# 1 = Disable resources needed for Appx programas, Windows Store and online MS Office features. *Recomended.
+# Note: Priority configuration, overrides other settings.
+# Note: Setting to 0 will keep Windows updates active, overriding disableWindowsUpdates setting below.
 
-$beXboxSafe = 0
-# 0 = Disable Xbox and Windows Live Games related stuff like Game Bar. *Recomended.
-# 1 = Enable it.
-# Note: Top priority configuration, overrides other settings.
+$beXboxSafe = 1
+# 0 = Enable Xbox and Windows Live Games.
+# 1 = Disable Xbox and Windows Live Games related stuff like Game Bar. *Recomended.
+# Note: Priority configuration, overrides other settings.
 
-$beBiometricSafe = 0
-# 0 = Disable biometric related stuff. *Recomended.
-# 1 = Enable it.
+$beBiometricSafe = 1
+# 0 = Enable biometric related stuff.
+# 1 = Disable biometric related stuff. *Recomended.
 # Note: Refers to lockscreen, fingerprint reader, illuminated IR sensor or other biometric sensors.
-# Note: Top priority configuration, overrides other settings.
+# Note: Priority configuration, overrides other settings.
 
-$beNetworkPrinterSafe = 1
-# 0 = Disable network printer. *Recomended.
-# 1 = Enable it.
-# Note: Top priority configuration, overrides other settings.
+$beNetworkPrinterSafe = 0
+# 0 = Enable network printing.
+# 1 = Disable network printing. *Recomended.
+# Note: Priority configuration, overrides other settings. (Does it? Where?)
 
-$beNetworkFolderSafe = 1
-# 0 = Disable network folders. *Recomended.
-# 1 = Enable it.
-# Note: Top priority configuration, overrides other settings.
+$beNetworkFolderSafe = 0
+# 0 = Enable network folders.
+# 1 = Disable network folders. *Recomended.
+# Note: Priority configuration, overrides other settings. (Does it? Where?)
 
-$beAeroPeekSafe = 0
-# 0 = Disable Windows Aero Peek. *Recomended.
-# 1 = Enable it to Windows defaults.
-# Note: Top priority configuration, overrides other settings.
+$beAeroPeekSafe = 1
+# 0 = Keep Windows Aero Peek defaults.
+# 1 = Disable Windows Aero Peek. *Recomended.
+# Note: Priority configuration, overrides other settings.
+# If set to 0, doPrivacyStuff will not disable Aero Peek.
 
-$beThumbnailSafe = 1
-# 0 = Disable Windows Thumbnails. *Recomended.
-# 1 = Enable it to Windows defaults.
+$beThumbnailSafe = 0
+# 0 = Keep Windows thumbnail defaults.
+# 1 = Disable Windows Thumbnails. *Recomended.
 # Note: Refers to the use of thumbnails instead of icon to some files.
-# Note: Top priority configuration, overrides other settings.
+# Note: Priority configuration, overrides other settings.
+# If set to 0, doPrivacyStuff will not disable thumbnails.
 
-$beCastSafe = 1
-# 0 = Disable Casting. *Recomended.
-# 1 = Enable it.  
+$beCastSafe = 0
+# 0 = Enable casting.
+# 1 = Disable casting. *Recomended.
 # Note: Refers to the Windows ability to Cast screen to another device and or monitor, PIP (Picture-in-picture), projecting to another device.
-# Note: Top priority configuration, overrides other settings.
+# Note: Priority configuration, overrides other settings.
+# If set to 1, adds Microsoft.PPIP to bloatwareList to be uninstalled.
 
-$beVpnPppoeSafe = 1
-# 0 = Will make the system safer against DNS cache poisoning but VPN or PPPOE conns may stop working. *Recomended.
-# 1 = This script will not mess with stuff required for VPN or PPPOE to work.  
+$beVpnPppoeSafe = 0
+# 0 = This script will not mess with stuff required for VPN or PPPOE to work. 
+# 1 = Will make the system safer against DNS cache poisoning but VPN or PPPOE conns may stop working. *Recomended.
 # Note: Set it to 1 if you pretend to use VPN, PPP conns, if the system is inside a VM or having trouble with internet.
+# If set to 0, doSecurityStuff will not disable DNS cache.
 
-$beTaskScheduleSafe = 1
-# 0 = Disable Task Schedule. *Recomended.
-# 1 = Enable it.  
-# Note: Top priority configuration, overrides other settings.
+$beTaskScheduleSafe = 0
+# 0 = Enable Task Schedule.
+# 1 = Disable Task Schedule. *Recomended.
+# Note: Priority configuration, overrides other settings.
+# If set to 0, doPrivacyStuff will not disable TimeBrokerSvc.
 
 ##########################################################################
 ## disable features ######################################################
@@ -122,6 +132,7 @@ $disableWindowsFirewall = 0
 $disableWindowsUpdates = 1
 # 0 = Enable Windows Updates.
 # 1 = Disable Windows Updates. *Recomended.
+# Overridden to 0 if beAppxSafe option above enabled.
 
 $disableTelemetry = 1
 # 0 = Enable Telemetry.
@@ -235,21 +246,23 @@ $disableBloatware = 1
 $editor='"%programfiles%\Notepad++\notepad++.exe"'
 
 $bloatwareList = @(		
-	# Uncommented lines will be uninstalled
+	# Uncommented lines will be uninstalled.
+	# Commented lines will remain installed.
 	
-	# Maybe useful AppX       
-	"*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
-	"*Microsoft.Advertising.Xaml_10.1712.5.0_x86__8wekyb3d8bbwe*"
+	### Maybe useful AppX apps 
 	#"*Microsoft.MSPaint*"
+	#"*Microsoft.WindowsCalculator*"
 	"*Microsoft.MicrosoftStickyNotes*"
 	"*Microsoft.Windows.Photos*"
-	#"*Microsoft.WindowsCalculator*"
 	"*Microsoft.WindowsStore*"
 	"*Microsoft.WindowsCamera*"
 	"*Microsoft.BingWeather*"
 	"MicrosoftTeams*"
-	
-	# Unnecessary AppX Apps
+	# What are these??
+	"*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
+	"*Microsoft.Advertising.Xaml_10.1712.5.0_x86__8wekyb3d8bbwe*"
+
+	### Unnecessary AppX Apps
 	"*Microsoft.DrawboardPDF*"
 	"*E2A4F912-2574-4A75-9BB0-0D023378592B*"
 	"*Microsoft.Appconnector*"
@@ -283,7 +296,7 @@ $bloatwareList = @(
 	"Microsoft.ZuneMusic"
 	"Microsoft.ZuneVideo"
 
-	# Sponsored AppX
+	### Sponsored AppX
 	"*DolbyLaboratories.DolbyAccess*"
 	"*Microsoft.Asphalt8Airborne*"
 	"*46928bounde.EclipseManager*"
@@ -313,20 +326,18 @@ $bloatwareList = @(
 	"*Roblox*"
 	"*AdobePhotoshop*"
 	
-	
-	# Special Cases
-	# Dont Touch
-	if ($beXboxSafe -eq 0) {	
+	### Special Cases
+	### Dont Touch ###
+	if ($beXboxSafe -eq 1) {	
 		"Microsoft.XboxGamingOverlay"
 		"Microsoft.Xbox.TCUI"
 		"Microsoft.XboxApp"
 		"Microsoft.XboxGameOverlay"
 		"Microsoft.XboxIdentityProvider"
 		"Microsoft.XboxSpeechToTextOverlay"
-		
 	} 
 	
-	if ($beBiometricSafe -eq 0) {	
+	if ($beBiometricSafe -eq 1) {	
 		"*Microsoft.BioEnrollment*"
 		"*Microsoft.CredDialogHost*"
 		"*Microsoft.ECApp*"
@@ -337,7 +348,7 @@ $bloatwareList = @(
 		"*NVIDIACorp.NVIDIAControlPanel*"
 	}
 	
-	if ($beCastSafe -eq 0) {
+	if ($beCastSafe -eq 1) {
 		"*Microsoft.PPIP*"
 	}
 )
@@ -647,7 +658,7 @@ Function EnablePeek {
 }
 
 Function DisablePeek {	
-	if ($beAeroPeekSafe -eq 1) {
+	if ($beAeroPeekSafe -eq 0) {
 		Write-Host "Aero Peek NOT disabled because of the beAeroPeekSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 		return
 	}	
@@ -665,7 +676,7 @@ Function EnableThumbnail {
 }
 
 Function DisableThumbnail {	
-	if ($beThumbnailSafe -eq 1) {
+	if ($beThumbnailSafe -eq 0) {
 		Write-Host "Windows Thumbnails NOT disabled because of the beThumbnailSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 		return
 	}
@@ -711,7 +722,7 @@ Function DisablePrefetcher {
 
 # 
 Function DisableDnsCache {
-	if ($beVpnPppoeSafe -eq 1) {
+	if ($beVpnPppoeSafe -eq 0) {
 		Write-Host "DNS cache NOT disabled because of the beVpnPppoeSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 		return
 	}
@@ -838,28 +849,8 @@ Function EnableLLMNR {
 
 if ($troubleshootInstalls -eq 1) {	
 
-
-
-
 	RegChange "SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" "Start" "2" "Disabling diagnosticshub.standardcollector.service service" "DWord"
 	Get-Service diagnosticshub.standardcollector.service | Set-Service -StartupType automatic
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	# BITS (Background Intelligent Transfer Service), its aggressive bandwidth eating will interfere with you online gameplay, work and navigation. Its aggressive disk usable will reduce your HDD or SSD lifespan
 	write-Host "Troubleshoot Install: Enabling BITS (Background Intelligent Transfer Service)" -ForegroundColor Green -BackgroundColor Black 
@@ -936,11 +927,11 @@ if ($disableNtfsCompression -eq 1) {
 	RegChange "SYSTEM\CurrentControlSet\Policies" "NtfsDisableCompression" "1" "Disabling NTFS file compression..." "DWord"
 }
 
-if ($beXboxSafe -eq 0) {
+if ($beXboxSafe -eq 1) {
 	DisableXboxFeatures
 }
 
-if ($beWifiSafe -eq 1) {
+if ($beWifiSafe -eq 0) {
 	RegChange "SYSTEM\CurrentControlSet\Services\RmSvc" "Start" "2" "Enabling RmSvc (Radio Management Service) service" "DWord"
 	Get-Service RmSvc | Set-Service -StartupType automatic
 	
@@ -948,7 +939,7 @@ if ($beWifiSafe -eq 1) {
 	Get-Service WlanSvc | Set-Service -StartupType automatic
 }
 
-if ($beAppxSafe -eq 0) {
+if ($beAppxSafe -eq 1) {
 	RegChange "SYSTEM\CurrentControlSet\Services\InstallService" "Start" "4" "Disabling InstallService MS Store service" "DWord"
 	Get-Service InstallService | Set-Service -StartupType disabled	
 	
@@ -962,7 +953,7 @@ if ($beAppxSafe -eq 0) {
 	Get-Service PcaSvc | Set-Service -StartupType disabled
 }
 
-if ($beAppxSafe -eq 1) {
+if ($beAppxSafe -eq 0) {
 	RegChange "SYSTEM\CurrentControlSet\Services\InstallService" "Start" "2" "Enabling InstallService MS Store service" "DWord"
 	Get-Service InstallService | Set-Service -StartupType automatic	
 	
@@ -977,7 +968,7 @@ if ($beAppxSafe -eq 1) {
 }
 
 
-if ($beXboxSafe -eq 1) {
+if ($beXboxSafe -eq 0) {
 	$safeXboxBloatware = @(	
 		"Microsoft.XboxGamingOverlay"
 		"Microsoft.Xbox.TCUI"
@@ -1009,7 +1000,7 @@ if ($beXboxSafe -eq 1) {
 	RegChange "Software\Microsoft\GameBar" "ShowStartupPanel" "1" "Enabling Game Bar Tips" "DWord"
 }
 
-if ($beBiometricSafe -eq 1) {
+if ($beBiometricSafe -eq 0) {
 	$safebeBiometricSafe = @(	
 		"*Microsoft.BioEnrollment*"
 		"*Microsoft.CredDialogHost*"
@@ -1023,13 +1014,13 @@ if ($beBiometricSafe -eq 1) {
 	}
 }
 
-if ($beCastSafe -eq 1) {
+if ($beCastSafe -eq 0) {
 	Write-Output "Trying to install Microsoft.PPIP."
 	Get-AppxPackage -Name "*Microsoft.PPIP*" | Add-AppxPackage
 	Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like "*Microsoft.PPIP*" | Add-AppxProvisionedPackage -Online
 }
 
-if ($beVpnPppoeSafe -eq 1) {
+if ($beVpnPppoeSafe -eq 0) {
 	RegChange "SYSTEM\CurrentControlSet\services\Dnscache" "Start" "2" "Enabling DNS Cache Service" "DWord"	
 }
 	
@@ -1408,7 +1399,7 @@ if ($doPerformanceStuff -eq 1) {
 	RegChange "SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" "DODownloadMode" "100" "Disabling DeliveryOptimization Peering and HTTP download mode (bypass mode)..." "DWord"	
 	RegChange "System\CurrentControlSet\Services\edgeupdate*" "Start" "4" "Disabling Edge updates..." "DWord"
 	
-	if ($beNetworkPrinterSafe -eq 0) {
+	if ($beNetworkPrinterSafe -eq 1) {
 		Write-Host "Disabling LanmanWorkstation Service..."
 		Get-Service Workstation | Stop-Service -PassThru | Set-Service -StartupType disabled
 		
@@ -1416,7 +1407,7 @@ if ($doPerformanceStuff -eq 1) {
 		Get-Service Server | Stop-Service -PassThru | Set-Service -StartupType disabled
 	}	
 		
-	if ($beWifiSafe -eq 0) {
+	if ($beWifiSafe -eq 1) {
 		RegChange "SYSTEM\CurrentControlSet\Services\RmSvc" "Start" "4" "Disabling RmSvc (Radio Management Service) service" "DWord"
 		Get-Service RmSvc | Set-Service -StartupType disabled
 		
@@ -1424,16 +1415,16 @@ if ($doPerformanceStuff -eq 1) {
 		Get-Service WlanSvc | Set-Service -StartupType disabled
 	}
 	
-	if ($beWifiSafe -eq 1) {
+	if ($beWifiSafe -eq 0) {
 		Write-Host "RmSvc (Radio Management Service) service  NOT disabled because of the beWifiSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 	}
 	
-	if ($beMicrophoneSafe -eq 0) {			
+	if ($beMicrophoneSafe -eq 1) {			
 		RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "4" "Disabling camsvc service" "DWord"
 		Get-Service camsvc | Set-Service -StartupType disabled
 	}
 	
-	if ($beMicrophoneSafe -eq 1) {			
+	if ($beMicrophoneSafe -eq 0) {			
 		Write-Host "camsvc service  was NOT disabled because of the beMicrophoneSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 		RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "2" "Enabling camsvc service" "DWord"
 		Get-Service camsvc | Set-Service -StartupType automatic
@@ -1767,7 +1758,7 @@ if ($doPrivacyStuff -eq 1) {
 	RegChange "SYSTEM\ControlSet\Control\WMI\AutoLogger\WiFiSession" "Start" "0" "Disabling AutoLogger\WiFiSession..." "DWord"	
 	RegChange "SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" "AllowBuildPreview" "0" "Disabling Windows Insider Program..." "DWord"	
 	
-	if ($beTaskScheduleSafe -eq 1) {
+	if ($beTaskScheduleSafe -eq 0) {
 		Write-Host "TimeBrokerSvc NOT disabled because of the beTaskScheduleSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 		RegChange "SYSTEM\CurrentControlSet\Services\TimeBrokerSvc" "Start" "2" "Enabling Time Brooker..." "DWord"
 	} else {	
@@ -1916,7 +1907,7 @@ if ($doSecurityStuff -eq 1) {
 	#Windows 10 must be configured to enable Remote host allows delegation of non-exportable credentials. (Stig Viewer V-74699)
 	RegChange "SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation" "AllowProtectedCreds" "1" "Hardening LSASS... " "DWord"
 
-	if ($beNetworkFolderSafe -eq 0) {
+	if ($beNetworkFolderSafe -eq 1) {
 		Write-Host "Disabling Network Location Awareness Service..."
 		Disable-NetAdapterBinding -Name "*" -ComponentID "ms_msclient"
 		
@@ -1924,7 +1915,7 @@ if ($doSecurityStuff -eq 1) {
 		Get-Service NlaSvc | Set-Service -StartupType disabled
 	}
 	
-	if ($beNetworkFolderSafe -eq 1) {
+	if ($beNetworkFolderSafe -eq 0) {
 		Write-Host "Enabling Network Location Awareness Service..."
 		Get-Service NlaSvc | Set-Service -StartupType automatic
 	}
@@ -2136,7 +2127,7 @@ if ($disablePerformanceMonitor -eq 1) {
 	Get-Service PerfHost | Stop-Service -PassThru | Set-Service -StartupType disabled
 }
 
-if ($beAppxSafe -eq 1) {
+if ($beAppxSafe -eq 0) {
 	# Windows update services are required for Appx to work
 	$disableWindowsUpdates = 0;
 }

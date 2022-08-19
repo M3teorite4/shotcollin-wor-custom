@@ -5,10 +5,13 @@
 ## Warning
 I do not take responsibility for what may happen to your system. This is at your own risk.
 
-## Before running WOR (stand by)
+### Warning note
+This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
+
+## Before running WOR (standby)
 ![](https://raw.githubusercontent.com/gordonbay/Windows-On-Reins/master/.github/BEFORE.PNG)
 
-## After (stand by)
+## After (standby)
 ![](https://raw.githubusercontent.com/gordonbay/Windows-On-Reins/master/.github/AFTER.PNG)
 * The Wifi was turned on a few moments before taking the screenshot in both cases.
 
@@ -110,6 +113,7 @@ I do not take responsibility for what may happen to your system. This is at your
 Usage
 ============
 
+0) Update configuration values as needed. **Note**: This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
 1) Run Power Shell as admin;
 2) Type the following to enable PowerShell script execution:
 <code>Set-ExecutionPolicy Unrestricted -Force</code>

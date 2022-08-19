@@ -127,13 +127,10 @@ Notes
 
 - To prevent Windows from installing bloatware, this script must be run before connecting to the internet for the first time;
 - Disabling Windows defender is unreversible and needs the system to be in safe mode;
-- Some NICs may show the preferred DNS encryption as "Unencrypted Only" after running the the fingerprinting prevention. Thats not true, the DNS is being handled over HTTPS (DoH) and there will be no traffic on port 53. Test using::
-
-<code>pktmon filter remove </code>
-
-<code>pktmon filter add -p 53</code>
-
-<code>start --etw -m real-time</code>
+- Some NICs may show the preferred DNS encryption as "Unencrypted Only" after running the the fingerprinting prevention. Thats not true, the DNS is being handled over HTTPS (DoH) and there will be no traffic on port 53. Test using:  
+    <code>pktmon filter remove </code>  
+    <code>pktmon filter add -p 53</code>  
+    <code>start --etw -m real-time</code>
 
 Recommended Filterlists
 ============

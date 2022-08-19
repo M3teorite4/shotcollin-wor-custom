@@ -17,7 +17,7 @@ $troubleshootInstalls = 0
 # Note: Known to fix these installations: windows language pack, Autodesk AutoCad and Appxs.
 # Note: Top priority configuration, overrides other settings.
 
-$beWifiSafe = 0
+$beWifiSafe = 1
 # 0 = May disable services required to use Wifi. *Recomended.
 # 1 = Keep Wifi working
 # Note: Top priority configuration, overrides other settings.
@@ -29,7 +29,7 @@ $beMicrophoneSafe = 0
 
 $beAppxSafe = 0
 # 0 = Disable resources needed for Appx programas, Windows Store and online MS Office features. *Recomended.
-# 1 = Will keep programs like Store and Microsoft Store working. Will Keep office online features working, like corporate login, power query, power bi workspace, "Open in app" option on sharepoint...
+# 1 = Will keep programs like Store and Mic rosoft Store working. Will Keep office online features working, like corporate login, power query, power bi workspace, "Open in app" option on sharepoint...
 # Note: Top priority configuration, overrides other settings.
 # Note: Will keep Windows updates active
 
@@ -44,12 +44,12 @@ $beBiometricSafe = 0
 # Note: Refers to lockscreen, fingerprint reader, illuminated IR sensor or other biometric sensors.
 # Note: Top priority configuration, overrides other settings.
 
-$beNetworkPrinterSafe = 0
+$beNetworkPrinterSafe = 1
 # 0 = Disable network printer. *Recomended.
 # 1 = Enable it.
 # Note: Top priority configuration, overrides other settings.
 
-$beNetworkFolderSafe = 0
+$beNetworkFolderSafe = 1
 # 0 = Disable network folders. *Recomended.
 # 1 = Enable it.
 # Note: Top priority configuration, overrides other settings.
@@ -59,27 +59,31 @@ $beAeroPeekSafe = 0
 # 1 = Enable it to Windows defaults.
 # Note: Top priority configuration, overrides other settings.
 
-$beThumbnailSafe = 0
+$beThumbnailSafe = 1
 # 0 = Disable Windows Thumbnails. *Recomended.
 # 1 = Enable it to Windows defaults.
 # Note: Refers to the use of thumbnails instead of icon to some files.
 # Note: Top priority configuration, overrides other settings.
 
-$beCastSafe = 0
+$beCastSafe = 1
 # 0 = Disable Casting. *Recomended.
 # 1 = Enable it.  
 # Note: Refers to the Windows ability to Cast screen to another device and or monitor, PIP (Picture-in-picture), projecting to another device.
 # Note: Top priority configuration, overrides other settings.
 
-$beVpnPppoeSafe = 0
+$beVpnPppoeSafe = 1
 # 0 = Will make the system safer against DNS cache poisoning but VPN or PPPOE conns may stop working. *Recomended.
 # 1 = This script will not mess with stuff required for VPN or PPPOE to work.  
 # Note: Set it to 1 if you pretend to use VPN, PPP conns, if the system is inside a VM or having trouble with internet.
 
-$beTaskScheduleSafe = 0
+$beTaskScheduleSafe = 1
 # 0 = Disable Task Schedule. *Recomended.
 # 1 = Enable it.  
 # Note: Top priority configuration, overrides other settings.
+
+##########################################################################
+## disable features ######################################################
+##########################################################################
 
 $disableCortana = 1
 # 0 = Enable Cortana
@@ -93,25 +97,25 @@ $disableStartupSound = 1
 # 0 = Keep Windows 11 startup sound
 # 1 = Disable Windows 11 startup sound *Recomended
 
-$useGoogleDNS = 1
+$useGoogleDNS = 0
 # 0 = Nothing
 # 1 = Apply Google DNS to connections *Recomended.
 
-$installNvidiaControlPanel = 1
+$installNvidiaControlPanel = 0
 # 0 = Remove Nvidia Appx.
 # 1 = Install Nvidia control panel. *Recomended.
 # Note: The script will check if your GPU vendor is Nvidia
 # Note: Refers to the new Nvidia Appx. Nvidia driver install dont cames with control panel anymore.
 
-$darkTheme = 1
+$darkTheme = 0
 # 0 = Use Windows and apps default light theme.
 # 1 = Enable dark theme. *Recomended.
 
-$draculaThemeNotepad = 1
+$draculaThemeNotepad = 0
 # 0 = Disable Dracula theme for Notepad++.
 # 1 = Enable Dracula theme for Notepad++. *Recomended.
 
-$disableWindowsFirewall = 1
+$disableWindowsFirewall = 0
 # 0 = Enable.
 # 1 = Disable. *Recomended.
 
@@ -125,7 +129,7 @@ $disableTelemetry = 1
 # Note: Microsoft uses telemetry to periodically collect information about Windows systems. It is possible to acquire information as the computer hardware serial number, the connection records for external storage devices, and traces of executed processes.
 # Note: This tweak may cause Enterprise edition to stop receiving Windows updates.
 
-$disableSMBServer = 1
+$disableSMBServer = 0
 # 0 = Enable SMB Server. 
 # 1 = Disable it. *Recomended.
 # Note: SMB Server is used for file and printer sharing.
@@ -133,6 +137,10 @@ $disableSMBServer = 1
 $disablelastaccess = 1
 # 0 = Enable it.
 # 1 = Disable last file access date. *Recomended.
+
+##########################################################################
+## perform system modifications ##########################################
+##########################################################################
 
 $doQualityOfLifeStuff = 1
 # 0 = Reverse system settings to default.
@@ -158,13 +166,13 @@ $disableSystemRestore = 1
 # 0 = Enable system restore
 # 1 = Disable system restore. *Recomended.
 
-$disableNtfsEncryption = 1
+$disableNtfsEncryption = 0
 # 0 = Enable NTFS file encryption
 # 1 = Disable NTFS file encryption. *Recomended.
 # NTFS file encryption is the built-in encryption tool in Windows used to encrypt files and folders on NTFS drives to protect them from unwanted access
 # Disabling it can reduce the processing overhead of filesystem operations
 
-$disableNtfsCompression = 1
+$disableNtfsCompression = 0
 # 0 = Enable NTFS file compression
 # 1 = Disable NTFS file compression. *Recomended.
 # Disabling it can increase performance
@@ -175,10 +183,10 @@ $disableVBS = 1
 # VBS (Virtualization-based security) prevent unsigned or questionable drivers and software from getting into memory
 # Disabling it may have a significant performance boost, specially in games
 
-#$powerPlan = '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c' # (High performance)
+$powerPlan = '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c' # (High performance)
 #$powerPlan = '381b4222-f694-41f0-9685-ff5bb260df2e' # (Balanced)
 #$powerPlan = 'a1841308-3541-4fab-bc81-f71556f20b4a' # (Power saver)
-$powerPlan = 'a1841308-3541-4fab-bc81-f71556f20b4a' # (Power saver)
+#$powerPlan = 'a1841308-3541-4fab-bc81-f71556f20b4a' # (Power saver)
 
 $diskAcTimeout = 0
 $diskDcTimeout = 0
@@ -189,7 +197,7 @@ $standbyDcTimeout = 25
 $hybernateAcTimeout = 0
 $hybernateDcTimeout = 0
 
-$firefoxSettings = 0
+$firefoxSettings = 1
 # 0 = Keep Firefox settings unchanged.
 # 1 = Apply pro Firefox settings. Disable update, cross-domain cookies... *Recomended.
 
@@ -227,17 +235,17 @@ $disableBloatware = 1
 $editor='"%programfiles%\Notepad++\notepad++.exe"'
 
 $bloatwareList = @(		
-	# Non commented lines will be uninstalled
+	# Uncommented lines will be uninstalled
 	
-	# Maybe userful AppX       
-	#"*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
-	#"*Microsoft.Advertising.Xaml_10.1712.5.0_x86__8wekyb3d8bbwe*"
+	# Maybe useful AppX       
+	"*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
+	"*Microsoft.Advertising.Xaml_10.1712.5.0_x86__8wekyb3d8bbwe*"
 	#"*Microsoft.MSPaint*"
-	#"*Microsoft.MicrosoftStickyNotes*"
-	#"*Microsoft.Windows.Photos*"
+	"*Microsoft.MicrosoftStickyNotes*"
+	"*Microsoft.Windows.Photos*"
 	#"*Microsoft.WindowsCalculator*"
-	#"*Microsoft.WindowsStore*"
-	#"*Microsoft.WindowsCamera*"
+	"*Microsoft.WindowsStore*"
+	"*Microsoft.WindowsCamera*"
 	"*Microsoft.BingWeather*"
 	"MicrosoftTeams*"
 	
@@ -262,7 +270,7 @@ $bloatwareList = @(
 	"Microsoft.OneConnect"
 	"Microsoft.People"
 	"Microsoft.Print3D"
-	"Microsoft.RemoteDesktop"
+	#"Microsoft.RemoteDesktop"
 	"Microsoft.SkypeApp"
 	"Microsoft.StorePurchaseApp"
 	"Microsoft.Office.Todo.List"

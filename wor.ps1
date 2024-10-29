@@ -27,7 +27,7 @@ $beWifiSafe = 0
 # Note: Priority configuration, overrides other settings.
 # Disables Radio Management Service (RmSvc) and WLAN config; if set to 0, RmSvc will not be disabled (is there an option for that below?)
 
-$beMicrophoneSafe = 1
+$beMicrophoneSafe = 0
 # 0 = Keep microphone working.
 # 1 = Disable services required to use the microphone. *Recomended.
 # Note: Priority configuration, overrides other settings.
@@ -1280,8 +1280,11 @@ if ($doPerformanceStuff -eq 0) {
 	Write-Host "Enabling LanmanServer Service..."
 	Get-Service Server | Set-Service -StartupType automatic
 	
-	RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "2" "Enabling camsvc service" "DWord"
-	Get-Service camsvc | Set-Service -StartupType automatic
+
+	# ADDED COMMENT ------------------------- doesnt fuck up your system settings app so that you can access it / Meteorith Added
+
+	#RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "2" "Enabling camsvc service" "DWord"
+	#Get-Service camsvc | Set-Service -StartupType automatic
 }
 
 if ($doPerformanceStuff -eq 1) {
@@ -1406,14 +1409,14 @@ if ($doPerformanceStuff -eq 1) {
 	}
 	
 	if ($beMicrophoneSafe -eq 1) {			
-		RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "4" "Disabling camsvc service" "DWord"
-		Get-Service camsvc | Set-Service -StartupType disabled
+		#RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "4" "Disabling camsvc service" "DWord"
+		#Get-Service camsvc | Set-Service -StartupType disabled
 	}
 	
 	if ($beMicrophoneSafe -eq 0) {			
 		Write-Host "camsvc service  was NOT disabled because of the beMicrophoneSafe configuration" -ForegroundColor Yellow -BackgroundColor DarkGreen
 		RegChange "SYSTEM\CurrentControlSet\Services\camsvc" "Start" "2" "Enabling camsvc service" "DWord"
-		Get-Service camsvc | Set-Service -StartupType automatic
+		#Get-Service camsvc | Set-Service -StartupType automatic
 	}
 }
 

@@ -1,150 +1,23 @@
-# Windows On Reins - Windows 10 Ameliorated, Bloatware removal, privacy fix and performance optimization
-[![made-with-powershell](https://img.shields.io/badge/PowerShell-1f425f?logo=Powershell)](https://microsoft.com/PowerShell)
-[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/SGHFtvx4bN)
-
-## Warning
-I do not take responsibility for what may happen to your system. This is at your own risk.
-
-### Warning note
-This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
-
-## Before running WOR (standby)
-![](https://raw.githubusercontent.com/gordonbay/Windows-On-Reins/master/.github/BEFORE.PNG)
-
-## After (standby)
-![](https://raw.githubusercontent.com/gordonbay/Windows-On-Reins/master/.github/AFTER.PNG)
-* The Wifi was turned on a few moments before taking the screenshot in both cases.
-
-## What it does - Security
-
-- Harden the system to prevent Mimikatz credential scraping attack
-- Harden the system to prevent Airstrike domain account hash capture attack
-- Disable NetBIOS and Link-Local Multicast Name Resolution (LLMNR) protocol. Both imposes security risk for layer-4 name resolution spoofing attacks, ARP poisoning, KARMA attack and cache poisoning
-- Disable SMB Server, it's known for opening doors for mass ransomware attacks - WannaCry and NotPetya
-- Disable Anonymous enumeration of shares. Allowing anonymous logon users to list all account names and enumerate all shared resources can provide a map of potential points to attack the system (Stigviewer V-220930)
-- Disable Wi-Fi Sense, it connects you to open hotspots that are "greenlighted" through crowdsourcing. Openning doors to Lure10 MITM attack and phishing (Stigviewer V-220808)
-- Disable Remote Assistance (RA). RA may allow unauthorized parties access to the resources on the computer. (Stigviewer V-220823)
-- Disable Autoplay, "allowing autoplay to execute may introduce malicious code to a system" (Stigviewer V-63673)
-- Disable WPAD (Web Proxy Auto-Discovery Protocol), it exposes the system to MITM attack
-- Apply Google's DNS to all connections to prevent some types of MITM attacks and DNS spoofing
-
-## What it does - Performance
-
-- Disable the Diagnostic Policy Service. To avoid some I/O operations to the file system and reduce system load
-- Disable Windows Malicious Software Removal Tool due to high disk usage
-- Disable NTFS encryption and compression due to processing overhead on filesystem operations
-- Disable of scheduled defragmentation due to lack of parameters and waste of disk cycles
-- Disable Windows Superfetch, due to high RAM usage and is known for causing slow boot times
-- Disable Windows Hibernation, there are some evidence that if you use HDD and not a SSD disabling it may lead to lower boot times
-- Disable Winmgmt service, Windows Management Instrumentation. This service transfer unusual amount of data, keeps windows updates silent running even if user had it opt-out
-- Allow user to disable Cortana
-- Disable SmartScreen Filter, due to huge performance impact, it checks online data about running programs
-- Disable BITS - Background Intelligent Transfer Service, UsoSvc - Update Orchestrator Service, DusmSvc - Data Usage, the all showed the same behavior, its aggressive bandwidth eating will interfere with you online gameplay, work and navigation. Its aggressive disk usable will reduce your HDD or SSD lifespan
-- Disable DoSvc (Delivery Optimization), it overrides the windows updates opt-out user option, turn your pc into a p2p peer for Windows updates, mining your network performance and compromises your online gameplay, work and navigation
-- Disable wlidsvc service, due to conflicts with some games
-- Disable Fax service
-- Disable Xbox Dvr, its may cause fps problems on some games
-- Disable Windows SgrmBroker - System Guard Runtime Monitor Broker, big name and big memory usage on some systems
-- Disable Windows SystemRestore, due to performance draw and never works when you need it
-- Disable Windows ShadowCopy, due to performance draw
-- Disable Windows Fast Boot, due conflicts with Steam and several other programs
-- Disable Adobe updates
-- Disable Nvidia NGX updates, due to high network usage and lack of settings
-- Apply Google's DNS to all connections to improve name resolution timing
-
-## What it does - Quality of Life
-
-- Disable "Get tips and suggestion when i use Windows";
-- Disable "Offer suggestions on hou i can set up my device";
-- Disable Windows Ads within file explorer;
-- Allow users to definitively disable windows updates;
-- Allow users to definitively disable windows defender;
-- Installation of VC++ resources;
-- Allow users to clear all the bloatware that cames with Windows installation;
-- Disable Windows sound effects, and W11 startup sound;
-- Disable error reporting;
-- Enable dark mode;
-- Install Nvidia control panel, if you own a Nvidia card;
-- Dracula's dark mode for Notepad++;
-- Disable error reporting;
-- Disable Action Center ;
-- Disable People's Bar;
-- Show Computer shortcut on desktop;
-- Remove all pinned bloatware from your start menu;
-- Disable sticky keys;
-- Disable Windows from asking your feedback;
-- Disable SecurityHealthService, due to anoying and non configurable popups;
-- Disable WpnService, push notification service;
-- Disable Razer Chroma SDK Server. Its night and you have that game with Razer SDK enabled running and messing up your keys;
-- Disable Windows Licence check;
-- Put "This PC" shortcut on desktop;
-- Disable Game Bar tips;
-- Disable Vmware Host Server, service uses port 80;
-- Firefox: disable recomendations and offers;
-- Firefox: autoplay audio and video;
-
-## Fingerprinting Prevention and privacy
-
-- Disable Diagtrack, Windows Diagnostics Tracking, design by Microsoft to spy on users and to intefere with your programs
-- Disable autoplay and autorun
-- Disable Windows Location Tracking and Wifi Sensor
-- Disable Windows lfsvc service, Geofence service, a cute name for a location tracking service
-- Disable NvTelemetryContainer, Nvidia telemetry agent
-- Disable Windows Media Player Network Sharing Service
-- Disable files last modification date, in most cases;
-- Disable Windows unique advertise ID;
-- Disable and clear ETL and perfomance logs;
-- Clears file thumbnails and allows user to complete disable it;
-- Clears minimized windows thumbnails and allows user to complete disable it;
-- Disable recent opened files history;
-- Disable Cortana web search;
-- Disable location tracking;
-- Disable recycle bin;
-- Enable DNS-over-HTTPS (DoH), both on Windows and Firefox, it encrypts the communication between the client and the resolver to prevent the inspection of domain names by network eavesdroppers;
-- Firefox: Enable Encrypted Client Hello (ECH), to prevent TLS from leaking any data by encrypting all messages;
-
-## Gaming
-
-- Disable Windows mouse acceleration (ideal for FPS games);
-- Disable VBS (Virtualization-based security), may have a significant performance boost, specially in games;
-- Ensure that Hardware Accelerated Scheduling is ON, in very rare cases it may reduce latency;
+THIS MODIFIED VERSION OF THE SCRIPT MAKES CHANGES TO CAMSVC SERVICE RELATED COMMANDS SO THE SCRIPT DOESN'T MESS WITH YOUR CONFIGURATION OF THE SERVICE ( DOESN'T CAUSE INABILITY TO OPEN THE SETTINGS APP ETC.)
+THE ORIGINAL SCRIPT WAS CREATED BY shotcollin : https://github.com/shotcollin
 
 
-Usage
-============
-
-0. Update configuration values as needed. **Note**: This fork reverses the effect of "priority" configuration values, so that setting to 1 enables and setting to 0 disables them.
-0. Run on new system **before** connecting to the Internet to prevent Windows from installing bloatware. When prompted to "Install initial packages?" answer no.
-0. Restart system in Safe Mode (in Run... dialog enter `msconfig` and check Safe Boot under Boot tab). Re-run script so that Windows Defender can be disabled. Again, choose no for installing initial packages.
-0. Restart again (in regular/non-safe mode). Run the script a final time.
-
-To run the script: 
-1. Run Power Shell as admin.
-2. When running for the first time, type the following to enable PowerShell script execution:  
-    <code>Set-ExecutionPolicy Unrestricted -Force</code>
-3. Run the script:  
-    <code>\<path-to-file\>/wor.ps1</code>  
-    or just right click the file wor.ps1 and select "Execute with powershell"
-
-Notes
-============
-
-- To prevent Windows from installing bloatware, this script must be run before connecting to the internet for the first time;
-- Disabling Windows defender is unreversible and needs the system to be in safe mode;
-- Some NICs may show the preferred DNS encryption as "Unencrypted Only" after running the the fingerprinting prevention. Thats not true, the DNS is being handled over HTTPS (DoH) and there will be no traffic on port 53. Test using:  
-    <code>pktmon filter remove </code>  
-    <code>pktmon filter add -p 53</code>  
-    <code>start --etw -m real-time</code>
-
-Recommended Filterlists
-============
-
-- https://raw.githubusercontent.com/DandelionSprout/adfilt/master/TwitchEvenMorePureViewingExperience.txt
-- https://raw.githubusercontent.com/DandelionSprout/adfilt/master/RedditTrashRemovalService.txt
-- https://raw.githubusercontent.com/taylr/linkedinsanity/master/linkedinsanity.txt
+l - stands for line (:) {line in question}
+camsvc - Capability Access Manager Service 
 
 
-Recommended Hosts filters
-============
+the reason why the camsvc is disabled when the $beMicrophoneSafe is set to 1 or true by default and causes the settings problem is so the privacy of your microphone cannot be compromised by software via the "access to microphone by apps" setting, the settings app doesn't run when the camsvc is disabled, control panel is not a full substitue for the Settings app so we need it, but it also does it's job and apps can no longer access your microphone and more importantly cannot change the setting.
 
-- https://github.com/MrRawes/firefox-hosts
+
+comment:  if you find yourself in a situation where your camsvc is already messed up and you are unable to open your settings app, navigate to the services app which is still accessible, find the Capability Access Manager Service in the list and change the startup type to manual or automatic ( in case of manual an app or an event has to first ask for the service to startup, in case of automatic the service starts with the bootup but it's your preference) - not disabled
+
+
+l:30 - beMicrophoneSafe is set to false
+in addition{
+	l:1411-1419 - even if $beMicrophoneSafe is true, it won't touch your camsvc configuration either way
+}
+
+l:1284 - removed the change in startup of camsvc to automatic; the removed command no longer makes your settings app inaccessible
+
+
+
